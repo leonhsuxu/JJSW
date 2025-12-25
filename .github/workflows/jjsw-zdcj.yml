@@ -9,44 +9,32 @@ on:
         default: '日常构建'
 
 
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     
-    - name: Set up JDK 17
+    - name: Set up JDK 11
       uses: actions/setup-java@v4
       with:
-        java-version: '17'
+        java-version: '11'
         distribution: 'temurin'
         cache: 'gradle'
-        
-    - name: Make gradlew executable
-      run: chmod +x ./gradlew 2>/dev/null || true
     
-    - name: Build Debug APK (Skip Lint)
-      run: |
-        if [ -f ./gradlew ]; then
-          ./gradlew assembleDebug -x lint -x lintVital --no-daemon 2>&1 | tail -50
-        else
-          gradle assembleDebug -x lint -x lintVital --no-daemon 2>&1 | tail -50
-        fi
-        
-    - name: Check if APK exists
-      run: |
-        if [ -f app/build/outputs/apk/debug/app-debug.apk ]; then
-          echo "✅ APK generated successfully!"
-          ls -lh app/build/outputs/apk/debug/app-debug.apk
-        else
-          echo "❌ APK not found"
-          find app/build -name "*.apk" 2>/dev/null || echo "No APK files found"
-        fi
-        
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew || echo "No gradlew found"
+    
+    - name: Build APK
+      run: gradle build --stacktrace
+    
+    - name: Check APK
+      run: ls -lh app/build/outputs/apk/debug/ || echo "Debug APK not found, trying release..."
+    
     - name: Upload APK
       uses: actions/upload-artifact@v4
-      if: success()
       with:
-        name: app-debug
+        name: app-apk
         path: app/build/outputs/apk/debug/app-debug.apk
         if-no-files-found: warn
