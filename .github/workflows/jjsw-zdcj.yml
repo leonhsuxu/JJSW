@@ -19,6 +19,7 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+        cache: 'gradle'
         
     - name: Make gradlew executable
       run: chmod +x ./gradlew || echo "gradlew not found"
@@ -26,14 +27,14 @@ jobs:
     - name: Build Debug APK
       run: |
         if [ -f ./gradlew ]; then
-          ./gradlew assembleDebug --stacktrace --info
+          ./gradlew assembleDebug -x lint --stacktrace
         else
-          gradle assembleDebug --stacktrace --info
+          gradle assembleDebug -x lint --stacktrace
         fi
         
     - name: Upload APK
       uses: actions/upload-artifact@v4
       if: success()
       with:
-        name: app-debug-${{ github.run_number }}
+        name: app-debug
         path: app/build/outputs/apk/debug/app-debug.apk
