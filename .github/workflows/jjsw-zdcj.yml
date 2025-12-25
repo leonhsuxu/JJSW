@@ -5,30 +5,22 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  workflow_dispatch:  # 添加这一行，允许手动触发
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
-
-    - name: Set up JDK 11
+    
+    - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: 'temurin'
 
     - name: Make gradlew executable
-      run: chmod +x ./gradlew || echo "gradlew not found, using gradle command"
-
-    - name: Build with Gradle
-      run: |
-        if [ -f ./gradlew ]; then
-          ./gradlew build --stacktrace
-        else
-          gradle build --stacktrace
-        fi
+      run: chmod +x ./gradlew || echo "gradlew not found"
 
     - name: Build Debug APK
       run: |
