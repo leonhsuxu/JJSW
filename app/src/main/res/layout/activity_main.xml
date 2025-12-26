@@ -4,13 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F0F2F5">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
-
         <!-- 顶部标题区 -->
         <TextView
             android:layout_width="match_parent"
@@ -21,7 +19,6 @@
             android:gravity="center"
             android:textColor="#1A237E"
             android:layout_marginTop="8dp"/>
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,7 +28,6 @@
             android:textColor="#78909C"
             android:layout_marginRight="8dp"
             android:fontStyle="italic"/>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,7 +36,6 @@
             android:layout_gravity="center"
             android:layout_marginBottom="15dp"
             android:textColor="#546E7A"/>
-
         <!-- 1. 系统默认参数设置 (带锁定) -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -71,7 +66,6 @@
                 </GridLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
         <!-- 2. 每日数据录入 -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -86,22 +80,21 @@
                 <TextView android:text="📝 每日生产数据录入" android:textStyle="bold" android:textColor="#2E7D32" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="12dp"/>
                 <EditText android:id="@+id/et_bins" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="拌料仓数" android:inputType="numberDecimal" android:text="5"/>
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                    <EditText android:id="@+id/et_f_count" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:hint="整炉数" android:inputType="number" android:text="3"/>
-                    <EditText android:id="@+id/et_t_count" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:hint="尾数" android:inputType="number" android:text="1200"/>
+                    <EditText android:id="@+id/et_f_count" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:hint="满锅数" android:inputType="number" />
+                    <EditText android:id="@+id/et_t_count" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:hint="未满锅产品数" android:inputType="number" />
                 </LinearLayout>
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                    <EditText android:id="@+id/et_defect" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:hint="不良" android:inputType="number" android:text="50"/>
-                    <EditText android:id="@+id/et_returned" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:hint="退回" android:inputType="number" android:text="20"/>
+                    <EditText android:id="@+id/et_defect" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:hint="不合格品数量" android:inputType="number" />
+                    <EditText android:id="@+id/et_returned" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:hint="2车间退回数量" android:inputType="number" />
                 </LinearLayout>
                 <RadioGroup android:id="@+id/rg_mode" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
-                    <RadioButton android:id="@+id/rb_m1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="方式1(入炉+不良)" android:checked="true" android:textSize="12sp"/>
-                    <RadioButton android:id="@+id/rb_m2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="方式2(手填)" android:textSize="12sp"/>
+                    <RadioButton android:id="@+id/rb_m1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="方式1(入灭菌数量+生产不良数)" android:checked="true" android:textSize="12sp"/>
+                    <RadioButton android:id="@+id/rb_m2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="方式2(装袋机数字和)" android:textSize="12sp"/>
                 </RadioGroup>
                 <EditText android:id="@+id/et_manual" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="手动输入生产数量" android:inputType="number" android:visibility="gone"/>
                 <Button android:id="@+id/btn_calc" android:layout_width="match_parent" android:layout_height="55dp" android:text="🚀 生成当日生产日报表" android:backgroundTint="#2E7D32" android:layout_marginTop="10dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
         <!-- 3. 彩色结果报表 -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -119,7 +112,6 @@
                 android:text="等待报表生成..."
                 android:textColor="#263238"/>
         </androidx.cardview.widget.CardView>
-
         <View android:layout_width="match_parent" android:layout_height="50dp"/>
     </LinearLayout>
-</ScrollView>
+</ScrollView>系统人
