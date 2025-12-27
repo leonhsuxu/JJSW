@@ -1,117 +1,231 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F2F5">
+    android:background="#F0F3F5"
+    android:fillViewport="true"
+    tools:context=".MainActivity">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
-        <!-- 顶部标题区 -->
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="晶晶生物装袋车间"
-            android:textSize="32sp"
+            android:textSize="26sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:textColor="#1A237E"
-            android:layout_marginTop="8dp"/>
+            android:textColor="#1A237E" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="by 许黎"
-            android:textSize="14sp"
-            android:gravity="right"
-            android:textColor="#78909C"
-            android:layout_marginRight="8dp"
-            android:fontStyle="italic"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="生产日报计算系统"
-            android:textSize="16sp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="15dp"
-            android:textColor="#546E7A"/>
-        <!-- 1. 系统默认参数设置 (带锁定) -->
-        <androidx.cardview.widget.CardView
+            android:text="作者：许黎"
+            android:textSize="12sp"
+            android:gravity="end"
+            android:layout_marginBottom="12dp"
+            android:textColor="#78909C" />
+
+        <!-- 1. 默认参数卡片 -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="8dp"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="#F8F9F9">
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="12dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="12dp">
+
                 <RelativeLayout
+                    android:id="@+id/layout_toggle_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp">
-                    <TextView android:text="⚙️ 系统默认参数设置" android:textStyle="bold" android:textColor="#7F8C8D" android:layout_centerVertical="true" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                    <Button android:id="@+id/btn_lock_toggle" android:layout_width="wrap_content" android:layout_height="36dp" android:layout_alignParentRight="true" android:text="🔓 点击解锁" android:textSize="11sp" android:backgroundTint="#95A5A6"/>
+                    android:paddingBottom="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚙️ 默认配方参数"
+                        android:textStyle="bold"
+                        android:textSize="16sp"/>
+                    <TextView
+                        android:id="@+id/tv_expand_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="收起 ▲"
+                        android:layout_alignParentRight="true"
+                        android:textSize="12sp"
+                        android:textColor="#666666"/>
                 </RelativeLayout>
-                <GridLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:columnCount="2">
-                    <EditText android:id="@+id/set_wood" android:layout_width="140dp" android:text="3500" android:enabled="false" android:inputType="numberDecimal" android:textSize="13sp" android:hint="木屑/仓"/>
-                    <EditText android:id="@+id/set_bran" android:layout_width="140dp" android:text="220" android:enabled="false" android:inputType="numberDecimal" android:textSize="13sp" android:hint="麦麸/仓"/>
-                    <EditText android:id="@+id/set_soy" android:layout_width="140dp" android:text="87" android:enabled="false" android:inputType="numberDecimal" android:textSize="13sp" android:hint="豆粕/仓"/>
-                    <EditText android:id="@+id/set_calc" android:layout_width="140dp" android:text="20" android:enabled="false" android:inputType="numberDecimal" android:textSize="13sp" android:hint="轻钙/仓"/>
-                    <EditText android:id="@+id/set_lime" android:layout_width="140dp" android:text="7" android:enabled="false" android:inputType="numberDecimal" android:textSize="13sp" android:hint="石灰/仓"/>
-                    <EditText android:id="@+id/set_bag" android:layout_width="140dp" android:text="3.6" android:enabled="false" android:inputType="numberDecimal" android:textSize="13sp" android:hint="菌袋/g"/>
-                    <EditText android:id="@+id/set_per_f" android:layout_width="match_parent" android:text="12096" android:enabled="false" android:inputType="number" android:textSize="13sp" android:layout_columnSpan="2" android:hint="每炉标准数"/>
-                </GridLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_params_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <GridLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:columnCount="3"
+                        android:layout_marginTop="8dp">
+                        <!-- 第一排 -->
+                        <LinearLayout android:orientation="vertical" android:layout_columnWeight="1" android:layout_margin="2dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="木屑/仓" android:textSize="12sp" android:textStyle="bold"/>
+                            <EditText android:id="@+id/set_wood" android:layout_width="match_parent" android:layout_height="wrap_content" android:enabled="false" android:inputType="numberDecimal" android:textSize="14sp"/>
+                        </LinearLayout>
+                        <LinearLayout android:orientation="vertical" android:layout_columnWeight="1" android:layout_margin="2dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="麦麸/仓" android:textSize="12sp" android:textStyle="bold"/>
+                            <EditText android:id="@+id/set_bran" android:layout_width="match_parent" android:layout_height="wrap_content" android:enabled="false" android:inputType="numberDecimal" android:textSize="14sp"/>
+                        </LinearLayout>
+                        <LinearLayout android:orientation="vertical" android:layout_columnWeight="1" android:layout_margin="2dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="豆粕/仓" android:textSize="12sp" android:textStyle="bold"/>
+                            <EditText android:id="@+id/set_soy" android:layout_width="match_parent" android:layout_height="wrap_content" android:enabled="false" android:inputType="numberDecimal" android:textSize="14sp"/>
+                        </LinearLayout>
+                        <!-- 第二排 -->
+                        <LinearLayout android:orientation="vertical" android:layout_columnWeight="1" android:layout_margin="2dp" android:layout_marginTop="8dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="轻钙/仓" android:textSize="12sp" android:textStyle="bold"/>
+                            <EditText android:id="@+id/set_calc" android:layout_width="match_parent" android:layout_height="wrap_content" android:enabled="false" android:inputType="numberDecimal" android:textSize="14sp"/>
+                        </LinearLayout>
+                        <LinearLayout android:orientation="vertical" android:layout_columnWeight="1" android:layout_margin="2dp" android:layout_marginTop="8dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="石灰/仓" android:textSize="12sp" android:textStyle="bold"/>
+                            <EditText android:id="@+id/set_lime" android:layout_width="match_parent" android:layout_height="wrap_content" android:enabled="false" android:inputType="numberDecimal" android:textSize="14sp"/>
+                        </LinearLayout>
+                        <LinearLayout android:orientation="vertical" android:layout_columnWeight="1" android:layout_margin="2dp" android:layout_marginTop="8dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="单袋g" android:textSize="12sp" android:textStyle="bold" android:textColor="#1976D2"/>
+                            <EditText android:id="@+id/set_bag" android:layout_width="match_parent" android:layout_height="wrap_content" android:enabled="false" android:inputType="numberDecimal" android:textSize="14sp"/>
+                        </LinearLayout>
+                        <!-- 第三排 -->
+                        <LinearLayout android:orientation="vertical" android:layout_columnWeight="1" android:layout_margin="2dp" android:layout_marginTop="8dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="每锅标数" android:textSize="12sp" android:textStyle="bold" android:textColor="#1976D2"/>
+                            <EditText android:id="@+id/set_per_f" android:layout_width="match_parent" android:layout_height="wrap_content" android:enabled="false" android:inputType="number" android:textSize="14sp"/>
+                        </LinearLayout>
+                    </GridLayout>
+                    <Button
+                        android:id="@+id/btn_lock_toggle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="🔓 解锁参数"
+                        android:backgroundTint="#95A5A6"
+                        android:textColor="#FFFFFF"
+                        android:layout_marginTop="10dp"/>
+                </LinearLayout>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
-        <!-- 2. 每日数据录入 -->
-        <androidx.cardview.widget.CardView
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 2. 日报数据录入 -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="8dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp"
             android:layout_marginBottom="16dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="16dp">
-                <TextView android:text="📝 每日生产数据录入" android:textStyle="bold" android:textColor="#2E7D32" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="12dp"/>
-                <EditText android:id="@+id/et_bins" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="拌料仓数" android:inputType="numberDecimal" android:text="5"/>
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                    <EditText android:id="@+id/et_f_count" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:hint="满锅数" android:inputType="number" />
-                    <EditText android:id="@+id/et_t_count" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:hint="未满锅产品数" android:inputType="number" />
-                </LinearLayout>
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                    <EditText android:id="@+id/et_defect" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:hint="不合格品数量" android:inputType="number" />
-                    <EditText android:id="@+id/et_returned" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:hint="2车间退回数量" android:inputType="number" />
-                </LinearLayout>
-                <RadioGroup android:id="@+id/rg_mode" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
-                    <RadioButton android:id="@+id/rb_m1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="方式1(入灭菌数量+生产不良数)" android:checked="true" android:textSize="12sp"/>
-                    <RadioButton android:id="@+id/rb_m2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="方式2(装袋机数字和)" android:textSize="12sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📝 生产数据录入"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#2E7D32"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="拌料仓数:" android:textSize="12sp" android:textStyle="bold"/>
+                <EditText android:id="@+id/et_bins" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="输入仓数" android:inputType="numberDecimal" android:padding="12dp" />
+
+                <!-- 手动补料区 (默认收起) -->
+                <GridLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:columnCount="2" android:layout_marginTop="4dp" android:layout_marginBottom="8dp">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:orientation="vertical" android:layout_columnWeight="1" android:layout_marginEnd="5dp">
+                        <TextView android:id="@+id/tv_label_extra_wood" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="➕手动补木屑(kg)" android:textSize="12sp" android:textColor="#1976D2" android:padding="6dp" android:background="?attr/selectableItemBackground"/>
+                        <EditText android:id="@+id/et_extra_wood" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="输入kg" android:visibility="gone" android:inputType="numberDecimal" android:textSize="13sp"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:orientation="vertical" android:layout_columnWeight="1" android:layout_marginStart="5dp">
+                        <TextView android:id="@+id/tv_label_extra_lime" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="➕手动补石灰(kg)" android:textSize="12sp" android:textColor="#1976D2" android:padding="6dp" android:background="?attr/selectableItemBackground"/>
+                        <EditText android:id="@+id/et_extra_lime" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="输入kg" android:visibility="gone" android:inputType="numberDecimal" android:textSize="13sp"/>
+                    </LinearLayout>
+                </GridLayout>
+
+                <GridLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:columnCount="2">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:orientation="vertical" android:layout_columnWeight="1" android:layout_marginEnd="6dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="满锅炉数:" android:textSize="11sp" android:textStyle="bold"/>
+                        <EditText android:id="@+id/et_f_count" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" android:hint="0" android:padding="12dp"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:orientation="vertical" android:layout_columnWeight="1" android:layout_marginStart="6dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="入炉尾数:" android:textSize="11sp" android:textStyle="bold"/>
+                        <EditText android:id="@+id/et_t_count" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" android:hint="0" android:padding="12dp"/>
+                    </LinearLayout>
+                </GridLayout>
+
+                <GridLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:columnCount="2" android:layout_marginTop="8dp">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:orientation="vertical" android:layout_columnWeight="1" android:layout_marginEnd="6dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2车间退回:" android:textSize="11sp" android:textStyle="bold" android:textColor="#D32F2F"/>
+                        <EditText android:id="@+id/et_returned" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" android:hint="0" android:padding="12dp"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:orientation="vertical" android:layout_columnWeight="1" android:layout_marginStart="6dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="破碎退回(kg):" android:textSize="11sp" android:textStyle="bold"/>
+                        <EditText android:id="@+id/et_crushed_kg" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal" android:hint="0.0" android:padding="12dp"/>
+                    </LinearLayout>
+                </GridLayout>
+
+                <GridLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:columnCount="2" android:layout_marginTop="8dp">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:orientation="vertical" android:layout_columnWeight="1" android:layout_marginEnd="6dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="调机耗损(pcs):" android:textSize="11sp" android:textStyle="bold" android:textColor="#1976D2"/>
+                        <EditText android:id="@+id/et_bag_loss_pcs" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" android:hint="0" android:padding="12dp"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:orientation="vertical" android:layout_columnWeight="1" android:layout_marginStart="6dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="落地脏污(kg):" android:textSize="11sp" android:textStyle="bold" android:textColor="#FF8F00"/>
+                        <EditText android:id="@+id/et_floor_waste_kg" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal" android:hint="0.0" android:padding="12dp"/>
+                    </LinearLayout>
+                </GridLayout>
+
+                <RadioGroup android:id="@+id/rg_mode" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:background="#FFF3E0" android:padding="8dp">
+                    <RadioButton android:id="@+id/rb_m1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="方法1: 填不良品" android:textSize="12sp"/>
+                    <RadioButton android:id="@+id/rb_m2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="方法2: 填总计数" android:checked="true" android:textSize="12sp"/>
                 </RadioGroup>
-                <EditText android:id="@+id/et_manual" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="手动输入生产数量" android:inputType="number" android:visibility="gone"/>
-                <Button android:id="@+id/btn_calc" android:layout_width="match_parent" android:layout_height="55dp" android:text="🚀 生成当日生产日报表" android:backgroundTint="#2E7D32" android:layout_marginTop="10dp"/>
+
+                <LinearLayout android:id="@+id/layout_manual_input" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:background="#E1F5FE" android:padding="12dp" android:layout_marginTop="8dp">
+                    <TextView android:id="@+id/tv_manual_label" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="装袋机计数总和:" android:textColor="#0277BD" android:textSize="12sp" android:textStyle="bold"/>
+                    <EditText android:id="@+id/et_manual" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="number" android:hint="输入数值" android:padding="12dp"/>
+                </LinearLayout>
+
+                <Button android:id="@+id/btn_calc" android:layout_width="match_parent" android:layout_height="55dp" android:text="🚀 生成日报表" android:backgroundTint="#2E7D32" android:layout_marginTop="12dp" android:textColor="#FFFFFF" android:textSize="16sp" android:textStyle="bold"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
-        <!-- 3. 彩色结果报表 -->
-        <androidx.cardview.widget.CardView
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 3. 结果报表 -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="8dp">
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
             <TextView
                 android:id="@+id/tv_report"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:background="#FFFFFF"
-                android:textSize="17sp"
+                android:padding="16dp"
+                android:textSize="15sp"
                 android:typeface="monospace"
+                android:text="📊 等待计算...\n\n请填写生产数据后点击\&quot;生成日报表\&quot;"
                 android:lineSpacingMultiplier="1.4"
-                android:text="等待报表生成..."
-                android:textColor="#263238"/>
-        </androidx.cardview.widget.CardView>
-        <View android:layout_width="match_parent" android:layout_height="50dp"/>
+                android:textColor="#424242"
+                android:background="#FFFFFF"/>
+        </com.google.android.material.card.MaterialCardView>
+        <View android:layout_width="match_parent" android:layout_height="60dp"/>
     </LinearLayout>
-</ScrollView>系统人
+</ScrollView>
