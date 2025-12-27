@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:background="?attr/selectableItemBackground">
+
+    <EditText
+        android:id="@+id/et_emp_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:hint="姓名"
+        android:textSize="13sp"
+        android:padding="8dp"/>
+
+    <EditText
+        android:id="@+id/et_emp_pos"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:hint="岗位"
+        android:textSize="13sp"
+        android:padding="8dp"/>
+
+    <EditText
+        android:id="@+id/et_emp_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2.5"
+        android:hint="单价"
+        android:inputType="numberDecimal"
+        android:textSize="13sp"
+        android:padding="8dp"/>
+
+    <CheckBox
+        android:id="@+id/cb_leave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="假"
+        android:textSize="11sp"
+        android:visibility="gone"
+        android:layout_gravity="center_vertical"/>
+
+    <ImageButton
+        android:id="@+id/btn_del_emp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@android:drawable/ic_delete"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:tint="#E74C3C"
+        android:layout_gravity="center_vertical"
+        android:visibility="gone"/>
+</LinearLayout>
