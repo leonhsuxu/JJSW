@@ -87,7 +87,12 @@ class MainActivity : AppCompatActivity() {
 
         // --- 4. 工资系统核心逻辑 ---
         loadEmployees(containerEmployees)
-        btnAddEmp.setOnClickListener { addEmployeeRow(containerEmployees) }
+
+        btnAddEmp.setOnClickListener {
+            addEmployeeRow(containerEmployees)
+            // ⭐ 立即保存，防止数据丢失
+            if(isSalaryLocked) saveEmployees(containerEmployees)
+        }
 
         btnLeaveToggle.setOnClickListener {
             isLeaveMode = !isLeaveMode
@@ -100,7 +105,7 @@ class MainActivity : AppCompatActivity() {
             if(isSalaryLocked) saveEmployees(containerEmployees)
         }
 
-        // --- 5. 计算生成报表（V3粉料岗位+背景色对齐） ---
+        // --- 5. 计算生成报表（V3粉料岗位+背景色对齐+计件总和） ---
         btnCalc.setOnClickListener {
             try {
                 val p = readDoubles(etWoodParam, etBranParam, etSoyParam, etCalcParam, etLimeParam, etBagGParam, etStdPerFull)
@@ -154,7 +159,7 @@ class MainActivity : AppCompatActivity() {
                 if(lossPcs > 0) sb.append("\n  (含调机耗损菌袋：$lossPcs pcs)")
                 if(wasteKg > 0) sb.append("\n\n⚠️ 落地脏污损耗原料：$wasteKg kg")
 
-                // V3工资计算（含粉料岗位+背景色对齐）
+                // V3工资计算（含粉料岗位+背景色对齐+计件总和）
                 sb.append("\n\n━━━━━━━━━━━━━━━━━━━━━━\n")
                 sb.append("💰 员工计件工资明细\n")
                 sb.append("━━━━━━━━━━━━━━━━━━━━━━\n\n")
@@ -209,7 +214,6 @@ class MainActivity : AppCompatActivity() {
                     sb.setSpan(ForegroundColorSpan(Color.parseColor("#2E7D32")), totalStart, sb.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     sb.setSpan(StyleSpan(Typeface.BOLD), totalStart, sb.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-                    // ⭐ 补齐到统一长度
                     val currentLength = sb.length - rowStart
                     val targetLength = headerText.length
                     if (currentLength < targetLength) {
@@ -218,12 +222,12 @@ class MainActivity : AppCompatActivity() {
 
                     sb.append("\n")
 
-                    // ⭐ 背景色覆盖整行
                     if (index % 2 == 1) {
                         sb.setSpan(BackgroundColorSpan(Color.parseColor("#F0F0F0")), rowStart, sb.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
                 }
 
+                // 粉料岗位（独立计算+浅紫背景统一长度）
                 // 粉料岗位（独立计算+浅紫背景统一长度）
                 if(powderEmps.isNotEmpty()) {
                     sb.append("\n")
@@ -258,7 +262,7 @@ class MainActivity : AppCompatActivity() {
                         sb.setSpan(ForegroundColorSpan(Color.parseColor("#9C27B0")), totalStart, sb.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                         sb.setSpan(StyleSpan(Typeface.BOLD), totalStart, sb.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-                        // ⭐ 补齐到统一长度
+                        // ⭐ 这里是关键：补齐到统一长度
                         val currentLength = sb.length - rowStart
                         val targetLength = headerText.length
                         if (currentLength < targetLength) {
@@ -267,7 +271,7 @@ class MainActivity : AppCompatActivity() {
 
                         sb.append("\n")
 
-                        // ⭐ 浅紫背景覆盖整行
+                        // ⭐ 背景色覆盖范围：从 rowStart 到 sb.length - 1（不包括换行符）
                         sb.setSpan(BackgroundColorSpan(Color.parseColor("#F3E5F5")), rowStart, sb.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
                 }
@@ -285,7 +289,7 @@ class MainActivity : AppCompatActivity() {
 
                 sb.append("\n")
 
-                // ⭐ V3新增：计件总和（不含粉料岗位）
+                // 计件总和（不含粉料岗位）
                 val normalTotalSalary = normalEmps.sumOf { jo ->
                     val price = jo.optDouble("price", 0.0)
                     val pieceSalary = price * bagged.toDouble()
@@ -294,7 +298,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 val normalStart = sb.length
-                sb.append("当日计件总和(不含粉料)：${String.format("%.2f", normalTotalSalary)} 元")
+                sb.append("当日计件总和：${String.format("%.2f", normalTotalSalary)} 元")
                 sb.setSpan(RelativeSizeSpan(1.2f), normalStart, sb.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 sb.setSpan(StyleSpan(Typeface.BOLD), normalStart, sb.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 sb.setSpan(ForegroundColorSpan(Color.parseColor("#00897B")), normalStart, sb.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -302,7 +306,7 @@ class MainActivity : AppCompatActivity() {
 
                 // 当日实发总和（含所有岗位）
                 val totalStart = sb.length
-                sb.append("当日工资总和(含粉料)：${String.format("%.2f", totalActualSalary)} 元")
+                sb.append("当日工资总和：${String.format("%.2f", totalActualSalary)} 元")
                 sb.setSpan(RelativeSizeSpan(1.2f), totalStart, sb.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 sb.setSpan(StyleSpan(Typeface.BOLD), totalStart, sb.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 sb.setSpan(ForegroundColorSpan(Color.parseColor("#1976D2")), totalStart, sb.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -351,7 +355,7 @@ class MainActivity : AppCompatActivity() {
         return str + "　".repeat(Math.max(0, paddingNeeded / 2)) + " ".repeat(paddingNeeded % 2)
     }
 
-    // ========== 工资管理辅助函数 ==========
+    // ========== 工资管理辅助函数（⭐ 修复数据覆盖问题） ==========
     private fun addEmployeeRow(container: LinearLayout, name: String = "", pos: String = "", price: String = "", onLeave: Boolean = false) {
         val row = LayoutInflater.from(this).inflate(R.layout.item_employee_row, null)
         val etName = row.findViewById<EditText>(R.id.et_emp_name)
@@ -360,6 +364,7 @@ class MainActivity : AppCompatActivity() {
         val cbLeave = row.findViewById<CheckBox>(R.id.cb_leave)
         val btnDel = row.findViewById<ImageButton>(R.id.btn_del_emp)
 
+        // ⭐ 关键修复：使用setText而不是直接赋值，避免视图复用问题
         etName.setText(name)
         etPos.setText(pos)
         etPrice.setText(price)
@@ -373,6 +378,7 @@ class MainActivity : AppCompatActivity() {
 
         btnDel.setOnClickListener {
             container.removeView(row)
+            // ⭐ 删除后立即保存
             saveEmployees(container)
         }
 
@@ -388,6 +394,7 @@ class MainActivity : AppCompatActivity() {
             cb.visibility = if(isLeaveMode) View.VISIBLE else View.GONE
         }
 
+        // ⭐ 退出请假模式时保存
         if(!isLeaveMode) saveEmployees(container)
     }
 
@@ -404,53 +411,92 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // ⭐ 优化保存逻辑：确保每个员工独立保存
     private fun saveEmployees(container: LinearLayout) {
-        val array = JSONArray()
-        for (i in 0 until container.childCount) {
-            val v = container.getChildAt(i)
-            val jo = JSONObject()
-            jo.put("name", v.findViewById<EditText>(R.id.et_emp_name).text.toString())
-            jo.put("pos", v.findViewById<EditText>(R.id.et_emp_pos).text.toString())
-            jo.put("price", v.findViewById<EditText>(R.id.et_emp_price).text.toString())
-            jo.put("onLeave", v.findViewById<CheckBox>(R.id.cb_leave).isChecked)
-            array.put(jo)
-        }
-        getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().putString("emps", array.toString()).apply()
-    }
+        try {
+            val array = JSONArray()
+            for (i in 0 until container.childCount) {
+                val v = container.getChildAt(i)
+                val jo = JSONObject()
 
-    private fun loadEmployees(container: LinearLayout) {
-        val raw = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getString("emps", "[]")
-        val array = JSONArray(raw)
-        for(i in 0 until array.length()){
-            val o = array.getJSONObject(i)
-            addEmployeeRow(
-                container,
-                o.getString("name"),
-                o.getString("pos"),
-                o.getString("price"),
-                o.optBoolean("onLeave", false)
-            )
-        }
-    }
+                // ⭐ 安全获取每个字段，避免空指针
+                val nameEt = v.findViewById<EditText>(R.id.et_emp_name)
+                val posEt = v.findViewById<EditText>(R.id.et_emp_pos)
+                val priceEt = v.findViewById<EditText>(R.id.et_emp_price)
+                val leaveCb = v.findViewById<CheckBox>(R.id.cb_leave)
 
-    private fun getEmployeeDataV3(container: LinearLayout): List<JSONObject> {
-        val list = mutableListOf<JSONObject>()
-        for (i in 0 until container.childCount) {
-            val v = container.getChildAt(i)
-            val name = v.findViewById<EditText>(R.id.et_emp_name).text.toString().trim()
-            val priceStr = v.findViewById<EditText>(R.id.et_emp_price).text.toString().trim()
-            val price = priceStr.toDoubleOrNull() ?: 0.0
+                jo.put("name", nameEt?.text?.toString() ?: "")
+                jo.put("pos", posEt?.text?.toString() ?: "")
+                jo.put("price", priceEt?.text?.toString() ?: "")
+                jo.put("onLeave", leaveCb?.isChecked ?: false)
 
-            if (name.isEmpty() || priceStr.isEmpty() || price == 0.0) {
-                continue
+                array.put(jo)
             }
 
-            val jo = JSONObject()
-            jo.put("name", name)
-            jo.put("pos", v.findViewById<EditText>(R.id.et_emp_pos).text.toString())
-            jo.put("price", price)
-            jo.put("onLeave", v.findViewById<CheckBox>(R.id.cb_leave).isChecked)
-            list.add(jo)
+            // ⭐ 保存到SharedPreferences
+            getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                .edit()
+                .putString("emps", array.toString())
+                .apply()
+
+        } catch (e: Exception) {
+            Toast.makeText(this, "保存员工数据失败：${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // ⭐ 优化加载逻辑：清空容器后再加载
+    private fun loadEmployees(container: LinearLayout) {
+        try {
+            // ⭐ 先清空现有视图,防止重复加载
+            container.removeAllViews()
+
+            val raw = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getString("emps", "[]")
+            val array = JSONArray(raw ?: "[]")
+
+            for(i in 0 until array.length()){
+                val o = array.getJSONObject(i)
+                addEmployeeRow(
+                    container,
+                    o.optString("name", ""),
+                    o.optString("pos", ""),
+                    o.optString("price", ""),
+                    o.optBoolean("onLeave", false)
+                )
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "加载员工数据失败：${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // ⭐ 优化数据获取：使用optString避免异常
+    private fun getEmployeeDataV3(container: LinearLayout): List<JSONObject> {
+        val list = mutableListOf<JSONObject>()
+        try {
+            for (i in 0 until container.childCount) {
+                val v = container.getChildAt(i)
+                val nameEt = v.findViewById<EditText>(R.id.et_emp_name)
+                val posEt = v.findViewById<EditText>(R.id.et_emp_pos)
+                val priceEt = v.findViewById<EditText>(R.id.et_emp_price)
+                val leaveCb = v.findViewById<CheckBox>(R.id.cb_leave)
+
+                val name = nameEt?.text?.toString()?.trim() ?: ""
+                val priceStr = priceEt?.text?.toString()?.trim() ?: ""
+                val price = priceStr.toDoubleOrNull() ?: 0.0
+
+                // 过滤掉无效员工
+                if (name.isEmpty() || priceStr.isEmpty() || price == 0.0) {
+                    continue
+                }
+
+                val jo = JSONObject()
+                jo.put("name", name)
+                jo.put("pos", posEt?.text?.toString() ?: "")
+                jo.put("price", price)
+                jo.put("onLeave", leaveCb?.isChecked ?: false)
+                list.add(jo)
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "读取员工数据失败：${e.message}", Toast.LENGTH_SHORT).show()
         }
         return list
     }
